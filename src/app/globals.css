@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+.custom-shadow:hover {
+    box-shadow: 0 0px 8px #cdd0eb;
+}
+
+
+/* .bg-quote {
+    background: url('../../src/app/img/bgQuote.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
+
+
+@keyframes slideFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+.animate-slide-fade-in {
+    animation: slideFadeIn 1s ease forwards;
+}
+
+.animate-slide-fade-out {
+    animation: slideFadeOut 1s ease forwards;
+} */
