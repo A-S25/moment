@@ -1,23 +1,30 @@
 "use client"
 
-import { useState } from "react"
+import React, { Suspense, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 
 export default function QuotePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <QuotePageContent />
+    </Suspense>
+  )
+}
+
+function QuotePageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const quote = searchParams.get("quote")
   const chosenCategory = searchParams.get("category")
   const [showInitialMessage, setShowInitialMessage] = useState(true)
   const [showQuote, setShowQuote] = useState(false)
-  
 
   const handleShowQuote = () => {
     setShowInitialMessage(false)
     setShowQuote(true)
 
-    // إعادة التوجيه بعد 7 ثوانٍ
+    // إعادة التوجيه بعد 9 ثوانٍ
     setTimeout(() => {
       router.push("/moments")
     }, 9000)
