@@ -13,18 +13,18 @@ const EditMoment = async ({ params }: Props) => {
   const session = await getServerSession(authOptions)
 
   if (!session || !session.user) {
-    // يا تسوين redirect لتسجيل الدخول:
     redirect("/api/auth/signin")
-    // أو لو تبين تعاملها كأنها مو موجودة:
-    // notFound()
   }
+
+  // 👇 هنا نعرّفه بشكل آمن
+  const userId = (session.user as any).id
 
   const momentId = parseInt(params.id)
 
   const moment = await prisma.moment.findFirst({
     where: {
       id: momentId,
-      userId: session.user.id // 🔹 اهم نقطة
+      userId // 👈 بدل session.user.id
     },
     include: {
       group: true
@@ -32,7 +32,6 @@ const EditMoment = async ({ params }: Props) => {
   })
 
   if (!moment) {
-    // يا اما مو موجودة، يا اما مو حقته
     notFound()
   }
 

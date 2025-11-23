@@ -50,6 +50,10 @@ model Group {
   // 🔹 خلي اسم المجموعة فريد لكل يوزر، مو على مستوى الجدول كامل
   @@unique([userId, name])
   @@index([userId])
+
+// new name of this column in db of railway
+  @@map("moment_groups")
+
 }
 
 

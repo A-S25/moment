@@ -1,27 +1,33 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 
-export default function QuotePage() {
+type QuotePageClientProps = {
+  quote: string
+  category: string
+}
+
+export default function Quote({
+  quote,
+  category
+}: QuotePageClientProps) {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const quote = searchParams.get("quote")
-  const chosenCategory = searchParams.get("category")
   const [showInitialMessage, setShowInitialMessage] = useState(true)
   const [showQuote, setShowQuote] = useState(false)
-  
 
   const handleShowQuote = () => {
     setShowInitialMessage(false)
     setShowQuote(true)
 
-    // إعادة التوجيه بعد 7 ثوانٍ
+    // إعادة التوجيه بعد 9 ثواني
     setTimeout(() => {
       router.push("/moments")
     }, 9000)
   }
+
+  const categoryLabel = category === "HAPPY" ? "لحظة سعيدة" : "لحظة عادية"
 
   return (
     <div
@@ -90,8 +96,7 @@ export default function QuotePage() {
             transition={{ duration: 0.8 }}
             className="text-xl font-light text-gray-500"
           >
-            لقد اخترت {chosenCategory === "HAPPY" ? "لحظة سعيدة" : "لحظة عادية"}
-            ، وهذا الاقتباس يعكسها...
+            لقد اخترت {categoryLabel}، وهذا الاقتباس يعكسها...
           </motion.h2>
 
           <motion.h1
@@ -103,7 +108,7 @@ export default function QuotePage() {
               textShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
             }}
           >
-            {quote}
+            {quote || "ما قدرنا نجيب اقتباس الآن، جرّبي تكتبي لحظة جديدة ✨"}
           </motion.h1>
 
           <motion.div

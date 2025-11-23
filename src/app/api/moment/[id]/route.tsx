@@ -14,6 +14,7 @@ export async function PATCH(
     return NextResponse.json({}, { status: 401 })
   }
 
+  const userId = (session.user as any).id
   const body = await request.json()
   const validation = momentSchema.safeParse(body)
 
@@ -22,18 +23,20 @@ export async function PATCH(
   }
 
   const momentId = parseInt(params.id)
-  const userId = session.user.id
 
   // ✅ تأكد إن اللحظة تابعة لليوزر
   const existingMoment = await prisma.moment.findFirst({
     where: {
       id: momentId,
-      userId,
-    },
+      userId
+    }
   })
 
   if (!existingMoment) {
-    return NextResponse.json({ error: "غير موجوده أو غير تابعة لك" }, { status: 404 })
+    return NextResponse.json(
+      { error: "غير موجوده أو غير تابعة لك" },
+      { status: 404 }
+    )
   }
 
   // ✅ لو فيه groupId: نربطها بمجموعة موجودة وتابعة لنفس اليوزر
@@ -43,8 +46,8 @@ export async function PATCH(
     const existingGroup = await prisma.group.findFirst({
       where: {
         id: groupId,
-        userId,
-      },
+        userId
+      }
     })
 
     if (!existingGroup) {
@@ -56,13 +59,13 @@ export async function PATCH(
 
     const updatedMoment = await prisma.moment.update({
       where: {
-        id: momentId,
+        id: momentId
       },
       data: {
         content: body.content,
         category: body.category,
-        groupId: groupId,
-      },
+        groupId
+      }
     })
 
     return NextResponse.json(updatedMoment, { status: 200 })
@@ -70,24 +73,22 @@ export async function PATCH(
 
   // ✅ لو فيه name: ننشئ مجموعة جديدة لليوزر ونربط اللحظة فيها
   if (body.name) {
-    const userId = session.user.id
-
     const newGroup = await prisma.group.create({
       data: {
         name: body.name,
-        userId,
-      },
+        userId
+      }
     })
 
     const updatedMoment = await prisma.moment.update({
       where: {
-        id: momentId,
+        id: momentId
       },
       data: {
         content: body.content,
         category: body.category,
-        groupId: newGroup.id,
-      },
+        groupId: newGroup.id
+      }
     })
 
     return NextResponse.json(updatedMoment, { status: 200 })
@@ -96,13 +97,13 @@ export async function PATCH(
   // ✅ بدون مجموعة: نخلي groupId = null لكن برضه نحدّث اللحظة حق نفس اليوزر
   const updatedMoment = await prisma.moment.update({
     where: {
-      id: momentId,
+      id: momentId
     },
     data: {
       content: body.content,
       category: body.category,
-      groupId: null,
-    },
+      groupId: null
+    }
   })
 
   return NextResponse.json(updatedMoment, { status: 200 })
@@ -115,27 +116,33 @@ export async function DELETE(
   const session = await getServerSession(authOptions)
 
   if (!session || !session.user) {
-    return NextResponse.json({ error: "غير مصرح لك بتنفيذ هذا الإجراء" }, { status: 401 })
+    return NextResponse.json(
+      { error: "غير مصرح لك بتنفيذ هذا الإجراء" },
+      { status: 401 }
+    )
   }
 
+  const userId = (session.user as any).id
   const momentId = parseInt(params.id)
-  const userId = session.user.id
 
   const existingMoment = await prisma.moment.findFirst({
     where: {
       id: momentId,
-      userId,
-    },
+      userId
+    }
   })
 
   if (!existingMoment) {
-    return NextResponse.json({ error: "غير موجوده أو غير تابعة لك" }, { status: 404 })
+    return NextResponse.json(
+      { error: "غير موجوده أو غير تابعة لك" },
+      { status: 404 }
+    )
   }
 
   await prisma.moment.delete({
     where: {
-      id: momentId,
-    },
+      id: momentId
+    }
   })
 
   return NextResponse.json({ message: "تم حذف اللحظة بنجاح." }, { status: 200 })
@@ -151,18 +158,21 @@ export async function GET(
     return NextResponse.json({}, { status: 401 })
   }
 
+  const userId = (session.user as any).id
   const momentId = parseInt(params.id)
-  const userId = session.user.id
 
   const moment = await prisma.moment.findFirst({
     where: {
       id: momentId,
-      userId,
-    },
+      userId
+    }
   })
 
   if (!moment) {
-    return NextResponse.json({ error: "غير موجوده أو غير تابعة لك" }, { status: 404 })
+    return NextResponse.json(
+      { error: "غير موجوده أو غير تابعة لك" },
+      { status: 404 }
+    )
   }
 
   return NextResponse.json(moment, { status: 200 })

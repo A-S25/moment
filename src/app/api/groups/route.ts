@@ -10,13 +10,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({}, { status: 401 })
   }
 
+  const userId = (session.user as any).id
+
   const { name } = await request.json()
 
   if (!name || !name.trim()) {
     return NextResponse.json({ error: "اسم المجموعة مطلوب." }, { status: 400 })
   }
-
-  const userId = session.user.id
 
   try {
     const newGroup = await prisma.group.create({
@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newGroup, { status: 201 })
   } catch (error: any) {
-    // لو مستخدمة @@unique([userId, name]) في الـ schema
     if (error.code === "P2002") {
       return NextResponse.json(
         { error: "عندك مجموعة بنفس الاسم." },
@@ -50,7 +49,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({}, { status: 401 })
   }
 
-  const userId = session.user.id
+  const userId = (session.user as any).id
 
   const groups = await prisma.group.findMany({
     where: {
